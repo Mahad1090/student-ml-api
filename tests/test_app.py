@@ -5,7 +5,7 @@ paths of the prediction endpoint.
 """
 from fastapi.testclient import TestClient
 
-from app import APPLICATION_VERSION, app
+from app import APPLICATION_VERSION, MODEL_VERSION, app
 
 client = TestClient(app)
 
@@ -17,7 +17,8 @@ def test_health_endpoint():
     data = response.json()
     assert data["status"] == "healthy"
     assert data["application"] == "student-ml-api"
-    assert data["version"] == APPLICATION_VERSION
+    assert data["application_version"] == APPLICATION_VERSION
+    assert data["model_version"] == MODEL_VERSION
 
 
 def test_predict_success():
