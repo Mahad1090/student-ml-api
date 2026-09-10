@@ -182,9 +182,9 @@ Why this beats `git clone && pip install && python app.py`:
 
 | | |
 |---|---|
-| **Symptom** | On branch `chore/failure-demo`, CI `Unit tests` job failed during collection: `ModuleNotFoundError: No module named 'httpx'` raised from `starlette.testclient`. `Docker build validation` skipped. |
+| **Symptom** | On branch `chore/failure-demo`, CI `Unit tests` job failed during collection; `Docker build validation` skipped (`needs: test`). |
 | **Root cause** | `httpx` was removed from `requirements.txt`. FastAPI's `TestClient` is a thin wrapper over `httpx`, so every test that instantiates it fails to import even though `app.py` itself still runs. |
-| **Evidence** | Actions run `RUN_ID_PLACEHOLDER`: `E   ModuleNotFoundError: No module named 'httpx'` → `ERROR tests/test_app.py`. |
+| **Evidence** | Actions run `34498295688`: `E   ModuleNotFoundError: No module named 'httpx'` / `E   RuntimeError: The starlette.testclient module requires the httpx package to be installed.` → `ERROR tests/test_app.py`. |
 | **Correction** | Restored `httpx==0.28.1` in `requirements.txt`; branch discarded (never merged). A runtime-only missing dep (e.g. dropping `uvicorn`) would instead pass `pytest` but fail `docker build`'s `CMD` at container start — which is why CI also builds the image. |
 | **Lesson** | Pin every direct *and* test-time dependency; CI catches the omission before it reaches `main`. |
 
