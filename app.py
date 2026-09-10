@@ -24,6 +24,10 @@ def _read_version() -> str:
 
 APPLICATION_VERSION = _read_version()
 
+# The model version is tracked independently of the application version: the
+# service code and the model artifact can be released on different cadences.
+MODEL_VERSION = "model-1"
+
 app = FastAPI(title=APPLICATION_NAME, version=APPLICATION_VERSION)
 
 
@@ -43,7 +47,8 @@ def health() -> dict:
     return {
         "status": "healthy",
         "application": APPLICATION_NAME,
-        "version": APPLICATION_VERSION,
+        "application_version": APPLICATION_VERSION,
+        "model_version": MODEL_VERSION,
     }
 
 
